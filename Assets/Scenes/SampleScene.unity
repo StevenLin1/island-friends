@@ -5809,7 +5809,7 @@ NavMeshAgent:
   m_AutoBraking: 1
   m_AutoRepath: 1
   m_Height: 2
-  m_BaseOffset: 0
+  m_BaseOffset: -0.13
   m_WalkableMask: 4294967295
   m_ObstacleAvoidanceType: 4
 --- !u!4 &1764778772 stripped
@@ -6118,6 +6118,7 @@ GameObject:
   - component: {fileID: 1852332035}
   - component: {fileID: 1852332037}
   - component: {fileID: 1852332036}
+  - component: {fileID: 1852332038}
   m_Layer: 5
   m_Name: Image
   m_TagString: Untagged
@@ -6182,6 +6183,24 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1852332034}
   m_CullTransparentMesh: 1
+--- !u!114 &1852332038
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1852332034}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6bb83b1aaa6c165448f34dc5081e25ee, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  player: {fileID: 1764778772}
+  target: {fileID: 858746907}
+  arrowUI: {fileID: 0}
+  showDistance: 8
+  amplitude: 30
+  frequency: 1.6
 --- !u!1001 &1921175840
 PrefabInstance:
   m_ObjectHideFlags: 0
