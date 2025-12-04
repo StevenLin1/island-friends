@@ -3,19 +3,20 @@ using UnityEngine;
 public class FloatEffect : MonoBehaviour
 {
     public Transform player;          // Wildman_V2
-    public Transform target;          // SeaStar，不填就用 transform
-    public RectTransform arrowUI;     // Player Arrow（Image）
+    public Transform target;          // 海星，不填就用自己
+    public RectTransform arrowUI;     // Player Arrow
 
     public float showDistance = 8f;
     public float amplitude = 30f;
     public float frequency = 1.6f;
 
     Vector2 startPos;
+    bool lastInRange = false; // 上一帧是否在范围内
 
     void Awake()
     {
         if (arrowUI == null)
-            arrowUI = GetComponentInChildren<RectTransform>(true); // 找子物体UI
+            arrowUI = GetComponentInChildren<RectTransform>(true);
 
         if (target == null)
             target = transform;
@@ -28,7 +29,7 @@ public class FloatEffect : MonoBehaviour
     {
         if (player == null || target == null || arrowUI == null) return;
 
-        // 算水平距离
+        // 计算水平距离
         Vector3 p1 = player.position;
         Vector3 p2 = target.position;
         p1.y = 0; p2.y = 0;
@@ -36,12 +37,26 @@ public class FloatEffect : MonoBehaviour
 
         bool inRange = dist <= showDistance;
 
-        // 只操作 arrowUI，不操作 this.gameObject
-        if (arrowUI.gameObject.activeSelf != inRange)
-            arrowUI.gameObject.SetActive(inRange);
+        // 进入范围的这一帧，重新记录起始位置并打开UI
+        if (inRange && !lastInRange)
+        {
+            if (!arrowUI.gameObject.activeSelf)
+                arrowUI.gameObject.SetActive(true);
+
+            startPos = arrowUI.anchoredPosition;
+        }
+
+        // 离开范围，关闭UI
+        if (!inRange && lastInRange)
+        {
+            arrowUI.gameObject.SetActive(false);
+        }
+
+        lastInRange = inRange;
 
         if (!inRange) return;
 
+        // 在范围内才做浮动
         float newY = startPos.y + Mathf.Sin(Time.time * frequency) * amplitude;
         arrowUI.anchoredPosition = new Vector2(startPos.x, newY);
     }
