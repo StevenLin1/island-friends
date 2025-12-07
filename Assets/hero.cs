@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.EventSystems;   // 新增：用来判断是否点在 UI 上
 
 public class Hero : MonoBehaviour
 {
@@ -9,20 +10,41 @@ public class Hero : MonoBehaviour
     // 记录上一次是否在移动
     private bool wasMoving = false;
 
+    // 新增：是否允许移动（对话时会被设为 false）
+    public bool canMove = true;
+
     void Start()
     {
         agent = GetComponent<NavMeshAgent>();
         animator = GetComponent<Animator>();
 
-        // 建议在代码里关掉 NavMeshAgent 自带的瞬间旋转
+        // 建议在代码里关闭 NavMeshAgent 自带的瞬间旋转
         agent.updateRotation = false;
     }
 
     void Update()
     {
+        // 如果当前不允许移动：停下并播放待机
+        if (!canMove)
+        {
+            agent.isStopped = true;
+            agent.velocity = Vector3.zero;
+
+            if (wasMoving)                // 只有刚从动变成停时切一次 Idle
+            {
+                animator.Play("Idle");
+                wasMoving = false;
+            }
+            return;
+        }
+
         // 鼠标左键点击地面移动
         if (Input.GetMouseButtonDown(0))
         {
+            // 新增：如果点击在 UI 上，就不让角色移动
+            if (EventSystem.current != null && EventSystem.current.IsPointerOverGameObject())
+                return;
+
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
             RaycastHit hit;
             if (Physics.Raycast(ray, out hit, 100f))
